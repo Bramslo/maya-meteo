@@ -1,11 +1,5 @@
 <template>
-  <main>
-    ADVANCED
-  </main>
+  <div class="bg-gray-200 p-5 mx-auto">
+    <span>ADVANCED</span>
+  </div>
 </template>
-<style scoped>
-main{
-    padding:4em
-}
-</style>
-
