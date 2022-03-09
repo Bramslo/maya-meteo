@@ -5,6 +5,7 @@ export type Getters = {
     getPositionLat(state: State): object
     getPositionLon(state: State): object
     getDefaultWeather(state: State): object
+    getPollution(state: State): object
 }
 
 export const getters: GetterTree<State, State> & Getters = {
@@ -16,5 +17,8 @@ export const getters: GetterTree<State, State> & Getters = {
     },
     getDefaultWeather(state){
         return state.default_weather
+    },
+    getPollution(state){
+        return state.pollution
     }
 }
