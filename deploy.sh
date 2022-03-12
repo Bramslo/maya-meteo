@@ -2,7 +2,7 @@
 
 set -e
 
-npm run deploy
+vue-tsc --noEmit && vite build
 
 cd dist
 
