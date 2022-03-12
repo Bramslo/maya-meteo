@@ -3,15 +3,20 @@
     
     <div class="py-5 px-2 gap-2 grid md:grid-cols-6 grid-cols-1 align-center max-w-5xl rounded-lg sm:rounded-none md:m-0 m-2  bg-mayaBlue shadow-mayaBlue-50 shadow-2xl">
       
-      <div class="md:col-span-2  w-full order-3 bg-white border border-mayaYellow shadow shadow-mayaBlue-50 rounded">
-        
-        <p class="font-light text-white text-sm">
-          Minutely Weather
+      <div class="md:col-span-2 backdrop-blur-sm bg-gradient-to-t from-white/50 to-transparent w-full order-3 object-cover  rounded">
+             <p class="font-bold pl-2 border-b border-mayaYellow  rounded text-white text-xs py-1">
+          Weekly Temperature 
         </p>
-        
+        <apexchart
+        class="flex items-center justify-center"
+          height="110"
+          type="area"
+          :options="chartOptions"
+          :series="series"
+        ></apexchart>
       </div>
 
-      <div class="md:col-span-1 bg-transparent  w-full order-2  rounded">
+      <div class="backdrop-blur-sm bg-gradient-to-t from-white/50 to-transparent md:col-span-1  p-1  w-full order-2  rounded">
         
         <p class="font-bold pl-2 border-b border-mayaYellow  rounded text-white text-xs py-1">
           Air Pollution 
@@ -25,15 +30,15 @@
           </svg>
         </p>
         <div class="grid gap-1 grid-cols-2">
-          <span class="text-mayaBlue font-medium text-xs rounded px-1 bg-mayaYellow-50">{{'P1: '+pollution.pm10}}</span>
-          <span class="text-mayaBlue font-medium text-xs rounded px-1 bg-mayaYellow-50">{{'P2: '+pollution.pm2_5}}</span>
-          <span class="text-mayaBlue font-medium text-xs rounded px-1 bg-mayaYellow-50">{{'o3: '+pollution.o3}}</span>
-          <span class="text-mayaBlue font-medium text-xs rounded px-1 bg-mayaYellow-50">{{'no2: '+pollution.no2}}</span>
+          <span class="text-mayaBlue mix-blend-luminosity py-1 font-medium text-xs rounded px-1 bg-mayaYellow-50">{{'P1: '+pollution.pm10}}</span>
+          <span class="text-mayaBlue mix-blend-luminosity py-1  font-medium text-xs rounded px-1 bg-mayaYellow-50">{{'P2: '+pollution.pm2_5}}</span>
+          <span class="text-mayaBlue mix-blend-luminosity py-1  font-medium text-xs rounded px-1 bg-mayaYellow-50">{{'O3: '+pollution.o3}}</span>
+          <span class="text-mayaBlue mix-blend-luminosity py-1  font-medium text-xs rounded px-1 bg-mayaYellow-50">{{'NO2: '+pollution.no2}}</span>
         </div>
 
       </div>
       
-      <div class="md:col-span-3 text-white w-full order-1 rounded">
+      <div class="md:col-span-3  text-white w-full order-1 rounded">
 
         <div class="">
             <div class="flex md:flex-row flex-col w-full justify-center items-center">
@@ -272,24 +277,119 @@
 import { useStore } from '@/store'
 import { ActionTypes } from '@/store/maya/actions'
 import type { ClientDefaultWeather } from '@/store/maya/state'
-import { defineComponent , computed, watch, } from 'vue'
+import { defineComponent , computed, watch, ref, onMounted} from 'vue'
 
 export default defineComponent({
     name:'loadClientPosition',
+
     setup() {
         const store = useStore()
         const posLat = computed(() => store.getters.getPositionLat)
         const posLon = computed(() => store.getters.getPositionLon)
         const pollution = computed(() => store.getters.getPollution)
         const default_weather: ClientDefaultWeather = computed(() => store.getters.getDefaultWeather)
-
         let open_weather_one_call = {
             lat: Number,
             lon: Number,
             lan:String,
             access: 'ab9d340a1abc29ca632c94fb7daf158b'
         }
+        let position_stack = {
+            query: 'Dakar',
+            access: '19565f2421a77b6ba75e6c7de8e58038'
+        }
+
+const chartOptions: Object = {
+            chart: {
+              height: 110,
+              type: 'area',
+               foreColor: "#ccc",
+    toolbar: {
+      autoSelected: "pan",
+      show: false
+    }
+            },
+  fill: {
+    gradient: {
+      enabled: true,
+      opacityFrom: 0.75,
+      opacityTo: 0
+    }
+  },
+              colors: ["#ebe939"],
+  stroke: {
+    width: 1
+  },
+  grid: {
+    borderColor: "#555",
+    clipMarkers: false,
+    yaxis: {
+      show:false,
+      lines: {
+        show: false,
+      }
+    },
+        xaxis: {
+      show:false,
+      lines: {
+        show: false,
+      }
+    }
+  },
+    markers: {
+    size: 5,
+    colors: ["#183963"],
+    strokeColor: "#ebe939",
+    strokeWidth: 3
+  },
+            dataLabels: {
+              enabled: false
+            },
+            legend: {
+              show: false
+            },
+                        yaxis: {show:false},
+            xaxis: {
+              show:false,
+              labels: {
+    show: false
+  },
+              categories: [
+                "01 Jan",
+                "02 Jan",
+                "03 Jan",
+                "04 Jan",
+                "05 Jan",
+                "06 Jan",
+                "07 Jan"
+              ]
+            }
+          }
+          const series: Array = [{
+            name: "Series 1",
+            data: [45, 52, 38, 45, 19, 23, 2]
+          }
+          ]
+     function generateData(count, yrange) {
+      var i = 0;
+      var series = [];
+      while (i < count) {
+        // var x = `${yrange.min}:`.toString();
+        var x = '-';
+        var y =
+          Math.floor(Math.random() * (yrange.max - yrange.min + 1)) +
+          yrange.min;
+        series.push(y)
+        // series.push({
+        //   x: x,
+        //   y: y,
+        // });
+        i++;
+      }
+      return series;
+    }
         // ab9d340a1abc29ca632c94fb7daf158b
+        store.dispatch(ActionTypes.GetSearchData,position_stack)
         watch(
             () => posLat.value,
             (newValue, oldValue) => {
@@ -317,7 +417,39 @@ export default defineComponent({
         //     { deep: true }
         // })
 
-        return {posLat,posLon,default_weather,pollution}
+        return {
+          posLat,
+          posLon,
+          default_weather,
+          pollution,
+          chartOptions,
+          series
+      }
     },
 })
 </script>
+<style scoped>
+.apexcharts-canvas {
+  position: relative;
+  background: #000524;
+  border: 1px solid #000;
+  box-shadow: 0 22px 35px -16px rgba(0, 0, 0, 0.71);
+  max-width: 850px;
+  margin: 0 auto;
+}
+
+.vue-apexcharts {
+  position: relative;
+}
+
+.link {
+  position: absolute;
+  bottom: 7px;
+  right: 13px;
+  z-index: 10;
+  color: #ccc;
+  font-size: 12px;
+  text-decoration: none;
+  font-family: Helvetica, Arial;
+}
+</style>

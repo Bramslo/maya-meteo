@@ -5,7 +5,8 @@ import type { State } from "./state"
 export enum ActionTypes {
     GetClientPosition = 'GET_CLIENT_POSITION',
     GetOneCallData = 'GET_ONE_CALL_DATA',
-    GetPollutionData = 'GET_POLLUTION_DATA'
+    GetPollutionData = 'GET_POLLUTION_DATA',
+    GetSearchData = 'GET_SEARCH_DATA'
 }
 
 type ActionAugments = Omit<
@@ -21,6 +22,7 @@ export type Actions = {
     [ActionTypes.GetClientPosition](context: ActionAugments):void
     [ActionTypes.GetOneCallData](context: ActionAugments):void
     [ActionTypes.GetPollutionData](context: ActionAugments):void
+     [ActionTypes.GeSearchData](context: ActionAugments):void
 }
 
 export const actions: ActionTree<State, State> & Actions = {
@@ -88,7 +90,7 @@ export const actions: ActionTree<State, State> & Actions = {
         .then(async response => {
             const data = await response.json();
             const list = data.list[0]
-            console.log(data)
+            // console.log(data)
             commit(MutationType.SetLoading, false)
             commit(MutationType.SetPollution, 
             {
@@ -99,6 +101,34 @@ export const actions: ActionTree<State, State> & Actions = {
                 no2: list.components.no2
             } 
             )
+            if (!response.ok) {
+                const error = (data && data.message) || response.statusText;
+                return Promise.reject(error);
+            }
+        })
+        .catch(error => {
+            commit(MutationType.SetLoading, false)
+            console.error("Maya is sorry but we cannot proceed to your request !", error);
+        })
+    },
+        async [ActionTypes.GetSearchData]({commit},collectedData): Promise<void>{
+        commit(MutationType.SetLoading, true)
+
+        fetch('http://api.positionstack.com/v1/forward?access_key='+collectedData.access+'&query='+collectedData.query)
+        .then(async response => {
+            const data = await response.json();
+            // const list = data.list[0]
+            console.log(data)
+            // commit(MutationType.SetLoading, false)
+            // commit(MutationType.SetPollution, 
+            // {
+            //     aqi: list.main.aqi,
+            //     pm10: list.components.pm10,
+            //     pm2_5: list.components.pm2_5,
+            //     o3: list.components.o3,
+            //     no2: list.components.no2
+            // } 
+            // )
             if (!response.ok) {
                 const error = (data && data.message) || response.statusText;
                 return Promise.reject(error);
