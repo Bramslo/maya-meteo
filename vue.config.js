@@ -1,3 +1,3 @@
 module.export = {
-    publiPath:'maya-meteo'
+    publicPath:'/maya-meteo/'
 }
