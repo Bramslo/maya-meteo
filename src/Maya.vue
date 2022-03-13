@@ -18,7 +18,7 @@ export default defineComponent({
 
     const store = useStore()
     const isLoading = computed(() => store.state.loading)
-    
+
     // DISPATCH ACTIONS TO LOCATE USER
     onMounted(() => store.dispatch(ActionTypes.GetClientPosition))
 

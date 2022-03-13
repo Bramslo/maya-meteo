@@ -2,13 +2,12 @@
 
 set -e
 
-vue-tsc --noEmit && vite build
+npm run build
 
 cd dist
 
-git init 
 git add -A
-git commit -m 'MAYA METEO IS LANDING UP'
+git commit -m 'MAYA METEO DEPLOY 1'
 git push -f git@github.com:Bramslo/maya-meteo.git main:gh-pages 
 
 cd -
