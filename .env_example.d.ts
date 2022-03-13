@@ -1,9 +1,0 @@
-//API URLs
-OPEN_WEATHER_API_URL = "sdsjds"
-POSITION_STACK_API_URL = "sdsjds"
-
-
-//API KEYs
-OPEN_WEATHER_API_KEY = "sdsjds"
-POSITION_STACK_API_KEY = "sdsjds"
-
