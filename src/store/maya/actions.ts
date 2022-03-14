@@ -1,7 +1,8 @@
 import type { ActionContext, ActionTree } from "vuex"
 import { MutationType, type Mutations } from "./mutations"
 import type { State } from "./state"
-import type { open_weather_type, position_stack_type } from "@/types"
+import type { open_weather_type, geocoding_type } from "@/types"
+import { useStore } from '@/store'
 
 // ACTION TYPES
 export enum ActionTypes {
@@ -14,11 +15,10 @@ export enum ActionTypes {
 //LOCAL CONTAINERS
 const FREE_GEO_IP_API_URL = "https://freegeoip.app/json/"
 const OPEN_WEATHER_ONE_CALL_API_URL = "https://api.openweathermap.org/data/2.5/onecall"
-const OPEN_WEATHER_AIR_POLLUTION_API_URL = "http://api.openweathermap.org/data/2.5/air_pollution"
-const POSITION_STACK_API_URL = "http://api.positionstack.com/v1/forward"
+const OPEN_WEATHER_AIR_POLLUTION_API_URL = "https://api.openweathermap.org/data/2.5/air_pollution"
+const OPEN_WEATHER_GEOCODING_URL = "https://api.openweathermap.org/geo/1.0/direct"
 
-const OPEN_WEATHER_API_KEY = '..'
-const POSITION_STACK_API_KEY = ".."
+const OPEN_WEATHER_API_KEY = 'ab9d340a1abc29ca632c94fb7daf158b'
 
 type ActionAugments = Omit<
 ActionContext<State, State>,
@@ -33,7 +33,7 @@ export type Actions = {
     [ActionTypes.GetClientPosition](context: ActionAugments):void
     [ActionTypes.GetOneCallData](context: ActionAugments,collectedData:open_weather_type):void
     [ActionTypes.GetPollutionData](context: ActionAugments,collectedData:open_weather_type):void
-    [ActionTypes.GetSearchData](context: ActionAugments,collectedData:position_stack_type):void
+    [ActionTypes.GetSearchData](context: ActionAugments,collectedData:geocoding_type):void
 }
 
 export const actions: ActionTree<State, State> & Actions = {
@@ -139,24 +139,28 @@ export const actions: ActionTree<State, State> & Actions = {
     async [ActionTypes.GetSearchData]({commit},collectedData){
         commit(MutationType.SetLoading, true)
 
-        fetch(POSITION_STACK_API_URL 
-            + '?access_key=' + collectedData.access
-            +'&query='+ collectedData.query
+        fetch(OPEN_WEATHER_GEOCODING_URL 
+            + '?q=' + collectedData.query
+            +'&limit=1&appid='+ collectedData.access
         ).then(async response => {
             const data = await response.json();
-            // const list = data.list[0]
-            console.log(data.data[0])
-            // commit(MutationType.SetLoading, false)
-            // commit(MutationType.SetPollution, 
-            // {
-            //     continent: list.main.aqi,
-            //     country: list.components.pm10,
-            //     latitute: list.components.pm2_5,
-            //     longitude: list.components.o3,
-            //     name: list.components.no2,
-            // type
-            // } 
-            // )
+            commit(MutationType.SetLoading, false)
+            if(data){
+                if(data[0].name){
+                    let open_weather_one_call = {
+                        lat: data[0].lat,
+                        lon: data[0].lon,
+                        access: OPEN_WEATHER_API_KEY
+                    }
+                    const store = useStore()
+
+                    store.dispatch(ActionTypes.GetOneCallData,open_weather_one_call)
+                    store.dispatch(ActionTypes.GetPollutionData,open_weather_one_call)
+                }
+            }else{
+                alert('MAYA CANNOT FIND THE WEATHER OF THAT LOCATION')
+            }
+
             if (!response.ok) {
                 const error = (data && data.message) || response.statusText;
                 return Promise.reject(error);

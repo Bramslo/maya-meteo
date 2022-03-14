@@ -29,11 +29,19 @@ export type ClientPollution = {
     no2: Number
 }
 
+
+export type ClientTemperature = {
+    min: Number
+    max: Number
+    clouds: Number
+}
+
 export type State = {
     loading: boolean
     position: ClientPosition
     default_weather: ClientDefaultWeather
-    pollution: ClientPollution
+    pollution: ClientPollution,
+    // temperature: ClientTemperature
 }
 
 export const state: State = {

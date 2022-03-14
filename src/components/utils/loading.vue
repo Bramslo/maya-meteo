@@ -7,3 +7,10 @@
     <div class="absolute w-32 h-32  animate-ping bg-mayaYellow rounded-full"></div>
   </div>
 </template>
+<script lang="ts">
+import { defineComponent } from 'vue'
+
+export default defineComponent({
+    name:'Loading'
+})
+</script>

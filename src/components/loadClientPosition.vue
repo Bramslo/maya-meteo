@@ -1,28 +1,28 @@
 <template>
-  <div>
-    
-    <div class="py-5 px-2 gap-2 grid md:grid-cols-6 grid-cols-1 align-center max-w-5xl rounded-lg sm:rounded-none md:m-0 m-2  bg-mayaBlue shadow-mayaBlue-50 shadow-2xl">
-      
-      <Weather :ClientDefaultWeather="default_weather"/>
-      <Pollution :ClientPollution="pollution"/>
-    </div>
-    
+  <div class="py-6 mx-6 p-4 gap-2 grid md:grid-cols-6 grid-cols-1 items-center max-w-5xl mx-auto rounded md:m-0">
+    <Weather :ClientDefaultWeather="default_weather"/>
+    <Pollution :ClientPollution="pollution"/>
+    <Temperature :ChartSeries="temperature"/>
+    <!-- Import global analitic chart  -->
   </div>
 </template>
 <script lang="ts">
 import { useStore } from '@/store'
 import { ActionTypes } from '@/store/maya/actions'
 import Pollution from '@/components/utils/pollution.vue'
+import Temperature from '@/components/utils/temperature.vue'
 import Weather from '@/components/utils/weather.vue'
-import type { open_weather_type, position_stack_type } from '@/types'
-import { defineComponent , computed, watch, ref, onMounted} from 'vue'
+import type { open_weather_type, geocoding_type } from '@/types'
+import type { ChartSerie } from '@/types'
+import { defineComponent , computed, watch} from 'vue'
 import type { ClientDefaultWeather, ClientPollution } from '@/store/maya/state'
 
 export default defineComponent({
     name:'loadClientPosition',
     components:{
+      Weather,
       Pollution,
-      Weather
+      Temperature
     },
     setup() {
         const store = useStore()
@@ -37,90 +37,20 @@ export default defineComponent({
             access: ''
         }
 
-        let position_stack: position_stack_type = {
+        let geocoding_data: geocoding_type = {
             query: 'Dakar',
             access: '19565f2421a77b6ba75e6c7de8e58038'
         }
 
-        // MOVE TO MAYA CHART
-        const chartOptions = {
-          chart: {
-            height: 110,
-            type: 'area',
-            foreColor: "#ccc",
-            toolbar: {
-              autoSelected: "pan",
-              show: false
-            }
-          },
-          fill: {
-            gradient: {
-              enabled: true,
-              opacityFrom: 0.75,
-              opacityTo: 0
-            }
-          },
-          colors: ["#ebe939"],
-          stroke: {
-            width: 1
-          },
-          grid: {
-            borderColor: "#555",
-            clipMarkers: false,
-            yaxis: {
-              show:false,
-              lines: {
-                show: false,
-              }
-            },
-                xaxis: {
-              show:false,
-              lines: {
-                show: false,
-              }
-            }
-          },
-          markers: {
-            size: 5,
-            colors: ["#183963"],
-            strokeColor: "#ebe939",
-            strokeWidth: 3
-          },
-          dataLabels: {
-            enabled: false
-          },
-          legend: {
-            show: false
-          },
-          yaxis: {
-            show:false
-          },
-          xaxis: {
-            show:false,
-            labels: {
-              show: false
-            },
-            categories: [
-              "01 Jan",
-              "02 Jan",
-              "03 Jan",
-              "04 Jan",
-              "05 Jan",
-              "06 Jan",
-              "07 Jan"
-            ]
-          }
-        }
-
-        const series = [
-          {
-            name: "Temperature",
-            data: [45, 52, 38, 10, 19, 23, 2]
-          }
-        ]
-
-        // ab9d340a1abc29ca632c94fb7daf158b
-        store.dispatch(ActionTypes.GetSearchData,position_stack)
+        const temperature: ChartSerie[] = [
+        {
+          name: "Min Temp",
+          data: [15, 40, 38, -10, 29, -5, 12]
+        },
+        {
+          name: "Max Temp",
+          data: [45, 52, 39, -13, 21, -3, 2]
+        }]
 
         watch(
             () => posLat.value,
@@ -141,35 +71,9 @@ export default defineComponent({
           posLon,
           default_weather,
           pollution,
-          chartOptions,
-          series
-      }
+          temperature
+        }
 
     },
 })
 </script>
-<style scoped>
-.apexcharts-canvas {
-  position: relative;
-  background: #000524;
-  border: 1px solid #000;
-  box-shadow: 0 22px 35px -16px rgba(0, 0, 0, 0.71);
-  max-width: 850px;
-  margin: 0 auto;
-}
-
-.vue-apexcharts {
-  position: relative;
-}
-
-.link {
-  position: absolute;
-  bottom: 7px;
-  right: 13px;
-  z-index: 10;
-  color: #ccc;
-  font-size: 12px;
-  text-decoration: none;
-  font-family: Helvetica, Arial;
-}
-</style>

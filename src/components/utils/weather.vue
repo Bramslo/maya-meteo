@@ -3,7 +3,7 @@
         <div class="">
             <div class="flex md:flex-row flex-col w-full justify-center items-center">
                 <div class="md:w-1/3 w-full flex items-center justify-center">
-                    <svg  class="w-20 h-20" fill="currentColor"  viewBox="0 0 30 30">
+                    <svg  class="w-24 h-24 text-mayaBlue animate-pulse" fill="currentColor"  viewBox="0 0 30 30">
                         <path d="M1.56,16.9c0,0.9,0.22,1.73,0.66,2.49s1.04,1.36,1.8,1.8c0.76,0.44,1.58,0.66,2.47,0.66h10.83c0.89,0,1.72-0.22,2.48-0.66
                         c0.76-0.44,1.37-1.04,1.81-1.8c0.44-0.76,0.67-1.59,0.67-2.49c0-0.66-0.14-1.33-0.42-2C22.62,13.98,23,12.87,23,11.6
                         c0-0.71-0.14-1.39-0.41-2.04c-0.27-0.65-0.65-1.2-1.12-1.67C21,7.42,20.45,7.04,19.8,6.77c-0.65-0.28-1.33-0.41-2.04-0.41
@@ -27,7 +27,7 @@
                         s-0.35-0.25-0.58-0.25h-2.04c-0.24,0-0.44,0.08-0.61,0.25C24.8,11.17,24.72,11.37,24.72,11.6z"/>
                     </svg>
                 </div>
-                <div class="md:w-2/3 w-full grid grid-cols-3 md:grid-cols-2">
+                <div class="md:w-2/3 w-full  bg-mayaBlue shadow-mayaBlue-50 shadow-2xl p-4 rounded mx-auto items-center grid grid-cols-3 md:grid-cols-2">
 
                     <div class="flex items-start p-1 rounded-lg shadow-xs w-full">
                         <div>

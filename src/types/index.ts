@@ -4,7 +4,7 @@ export type open_weather_type = {
     access: String
 }
 
-export type position_stack_type = {
+export type geocoding_type = {
     query: String,
     access: String
 }
@@ -52,7 +52,16 @@ export enum ChartHorizontalAlign {
   }
   
   export interface ChartLegend {
+    chart?: ChartConfig;
     show?: true;
+    fill: {
+      gradient?: {
+        enabled: boolean,
+        opacityFrom: number,
+        opacityTo: number
+      }
+    },
+    colors?: string[];
     position?: ChartPosition;
     horizontalAlign?: ChartHorizontalAlign;
     verticalAlign?: ChartVerticalAlign;
@@ -65,15 +74,6 @@ export enum ChartHorizontalAlign {
     labels?: {
         foreColor?: string;
         useSeriesColors?: boolean;
-    };
-    markers?: {
-        size?: number;
-        strokeColor?: string;
-        strokeWidth?: number;
-        offsetX?: number;
-        offsetY?: number;
-        radius?: number;
-        shape?: ChartShape;
     };
     itemMargin?: {
         horizontal?: number;
@@ -89,11 +89,84 @@ export enum ChartHorizontalAlign {
     onItemHover?: {
         highlightDataSeries?: boolean;
     };
+    stroke?: {
+      curve?: ChartCurve;
+      width?: Number;
+  };
+  series?: ChartSerie[];
+  title?: {
+      text?: string;
+      align?: ChartHorizontalAlign;
+  };
+  grid?: {
+      clipMarkers?: boolean;
+      borderColor?: string;
+      row?: ChartRow;
+      yaxis: {
+        show:boolean,
+        lines: {
+          show: boolean,
+        }
+      },
+      xaxis: {
+        show:boolean,
+        lines: {
+          show: boolean,
+        }
+      },
+  };
+  markers?: {
+    size?: number;
+    colors?: string[];
+    strokeColor?: string;
+    strokeWidth?: number;
+    strokeOpacity?: number;
+    fillOpacity?: number;
+    shape?: ChartShape;
+    radius?: number;
+    offsetX?: number;
+    offsetY?: number;
+    hover?: {
+      size?: number
+    }
+  };
+  dataLabels?: {
+    enabled: boolean
+  },
+  legend?: {
+    show: boolean
+  },
+  xaxis?: {
+      show?: boolean;
+      labels?: {
+        show: boolean
+      },
+      categories?: string[];
+      title?: {
+          text?: string;
+      }
+  };
+  yaxis?: {
+      labels?: {
+        show: boolean
+      },
+      show?: boolean;
+      title?: {
+          text?: string;
+      };
+      min?: number;
+      max?: number;
+  };
   }
   
   export interface ChartConfig {
     height?: number;
     type?: ChartTypes;
+    foreColor?: string,
+    toolbar?: {
+      autoSelected: string,
+      show: boolean
+    };
     shadow?: {
         enabled?: boolean;
         color?: string;
